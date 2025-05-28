@@ -24,10 +24,18 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('fillMandatoryFieldsAndSubmit', () => {
-    cy.get('#firstName').type('Thiago')
-    cy.get('#lastName').type('Fernandes')
-    cy.get('#email').type('thiago@gmail.com')
-    cy.get('#phone').type('99990000')
-    cy.get('#open-text-area').type('Criando primeira suite de testes Cypress.')
-} )
+
+Cypress.Commands.add('fillMandatoryFieldsAndSubmit', (data = {
+    /* criar objeto para passar parametros */ 
+        firstName: 'Thiago',
+        lastName: 'Fernandes', 
+        email: 'thiago@gmail.com',
+        phone: '99990000',
+        text: 'Criando primeira suite de testes Cypress'
+    }) => {
+    cy.get('#firstName').type(data.firstName)
+    cy.get('#lastName').type(data.lastName)
+    cy.get('#email').type(data.email)
+    cy.get('#phone').type(data.phone)
+    cy.get('#open-text-area').type(data.text)
+})

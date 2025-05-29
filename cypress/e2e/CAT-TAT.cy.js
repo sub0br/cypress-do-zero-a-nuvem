@@ -11,10 +11,12 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
   })
 
-  it('preenche campos obrigatórios enviar formulário', () => {
-    /* get para pegar elementos, type para digitar
-      usar de forma encadeada
-    */
+  it('preenche campos obrigatórios e envia formulário', () => {
+    /* get para pegar elementos, type para digitar */
+
+    /* otimizado com clock para parar o relogio e tick para soltar, economizando tempo de teste */
+    cy.clock()
+    
     cy.get('#firstName').type('Thiago')
     .should('have.value', 'Thiago')
     cy.get('#lastName').type('Fernandes')
@@ -28,12 +30,21 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('button[type="submit"]').click()
     cy.get('.success').should('be.visible')
 
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
+
   })
 
   it('validar mensagem de erro para campos em branco', () => {
     /* validando mensagem de erro */
+
+    cy.clock()
+
     cy.get('button[type="submit"]').click()
     cy.get('.error').should('be.visible')
+
+    cy.tick(3000)
+    cy.get('.error').should('not.be.visible')
   })
 
   it('validar se telefone aceita apenas números', () => {
@@ -45,6 +56,9 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
   it('validar se envio falha caso não preencher telefone como obrigatório', () => {
      /* usar have.value para determinar se campo texto esta vazio */
+     
+     cy.clock()
+
      cy.get('#firstName').type('Thiago')
      cy.get('#lastName').type('Fernandes')
      cy.get('#email').type('thiago@gmail.com')
@@ -56,6 +70,9 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
      cy.get('button[type="submit"]').click()
      cy.get('.error').should('be.visible')
+
+     cy.tick(3000)
+     cy.get('.error').should('not.be.visible')
 
    })
 
@@ -174,6 +191,54 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   /*------------------- END Seção 11 --------------------*/
 
   /*------------------- Seção 12 --------------------*/
-  /* forçar erro na aplicação */
+  /* forçar erro na aplicação para detectar na CI */
+  /*------------------- END Seção 12 --------------------*/
 
+  /*------------------- Seção 14 --------------------*/
+  /* Cypress avançado */
+  /* atualziação das verificações de erro com clock e tick para economizar tempo de teste */
+  
+  it('exibe e oculta as mensagens com invoke', () => {
+    /* usa o invoke pra chamar uma mensagem e validar se ela esta correta */
+    cy.get('.success')
+    .should('not.be.visible')
+    .invoke('show')
+    .should('be.visible').and('contain', 'Mensagem enviada com sucesso.')
+    .invoke('hide')
+    .should('not.be.visible')
+    cy.get('.error')
+    .should('not.be.visible')
+    .invoke('show')
+    .should('be.visible').and('contain', 'Valide os campos obrigatórios!')
+    .invoke('hide')
+    .should('not.be.visible')
+  })
+
+  it('preenche o campo da área de texto com invoke', () => {
+    /* preenche o campo usando invoke pra preencher o texto por inteiro */
+    cy.get('#open-text-area').invoke('val', 'Eu INVOCO o Loren Ipsum')
+    .should('have.value', 'Eu INVOCO o Loren Ipsum')
+  })
+  
+  it('faz request HTML', () => {
+    /* faz request HTML e verifica status */
+    cy.request('https://cac-tat-v3.s3.eu-central-1.amazonaws.com/index.html')
+      .as('get.Request')
+      .its('status').should('be.equal', 200)
+    cy.get('@get.Request').its('body')
+    .should('include', 'CAC TAT')
+  })
+  /*------------------- END Seção 14 --------------------*/
+
+  /*------------------- Desafio ------------------ */
+  it('Encontrar o gato danado', () => {
+    cy.get('#cat')
+    .invoke('show')
+    .should('be.visible')
+    cy.get('#title')
+    .invoke('text', 'CAT TAT')
+    cy.get('#subtitle')
+    .invoke('text', 'Te achei, gato bandido!')
+  })
+  /*------------------- END Desafio ------------------ */
 })

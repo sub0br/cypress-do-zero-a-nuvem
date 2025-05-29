@@ -169,7 +169,11 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   /* alterações no arquivo package.json e cypress.config.js para rodar no tamanho mobile e rodar no formato headless, gerando videos da execução */
   /*------------------- END Seção 9 --------------------*/
 
-  /*------------------- Seção 10 --------------------*/
+  /*------------------- Seção 11 --------------------*/
   /* criação de dir github para criar workflow de integração continua */
-  /*------------------- END Seção 10 --------------------*/
+  /*------------------- END Seção 11 --------------------*/
+
+  /*------------------- Seção 12 --------------------*/
+  /* forçar erro na aplicação */
+
 })

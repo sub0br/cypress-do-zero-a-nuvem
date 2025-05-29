@@ -133,11 +133,42 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
  it('seleciona um arquivo com drag-drop', () => {
   /* faz upload usando drag-drop */
-   cy.get('#file-upload').selectFile('cypress/fixtures/example.json', {action: 'drag-drop'})
-   .should(input => {
-     expect(input[0].files[0].name).to.equal('example.json')
+    cy.get('#file-upload').selectFile('cypress/fixtures/example.json', {action: 'drag-drop'})
+    .should(input => {
+    expect(input[0].files[0].name).to.equal('example.json')
   })
 
  })
 
+ it('seleciona um arquivo com alias', () => {
+  /* definir alias para arquivo antes de chama-lo como argumento */
+    cy.fixture('example.json').as('sampleFile')
+    cy.get('#file-upload').selectFile('@sampleFile')
+    .should(input => {
+    expect(input[0].files[0].name).to.equal('example.json')
+    })
+  })
+  /*------------------- END Seção 7 --------------------*/
+
+  /*------------------- Seção 8 --------------------*/
+  it('verifica politica de privacidade em nova aba sem necessidade de abrir', () => {
+    /* verifica se a página existe com contains 'a' e valida se tem os atributos */
+    cy.contains('a', 'Política de Privacidade')
+    .should('have.attr', 'href', 'privacy.html').and('have.attr', 'target', '_blank')
+  })
+
+  it('acessa a página removendo target e clicando no link', () => {
+    /* usa o invoke para remover atributo antes de clicar e confirma que é a página em seguida */
+    cy.contains('a', 'Política de Privacidade').invoke('removeAttr', 'target')
+    .click()
+    cy.contains('h1', 'CAC TAT - Política de Privacidade').should('be.visible')
+  })
+  /*------------------- END Seção 8 --------------------*/
+
+  /*------------------- Seção 9 --------------------*/
+  /* alterações no arquivo package.json e cypress.config.js para rodar no tamanho mobile e rodar no formato headless, gerando videos da execução */
+  /*------------------- END Seção 9 --------------------*/
+
+  /*------------------- Seção 10 --------------------*/
+  /* criação de dir github para criar workflow de integração continua */
 })
